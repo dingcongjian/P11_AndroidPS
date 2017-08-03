@@ -111,23 +111,35 @@ public class MainActivity extends AppCompatActivity {
 
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == 0) {
-                                Intent email = new Intent(Intent.ACTION_SEND);
-                                email.putExtra(Intent.EXTRA_SUBJECT,
-                                        "Singapore");
-                                String msg = " ";
-                                email.putExtra(Intent.EXTRA_TEXT,
-                                        msg);
-                                email.setType("message/rfc822");
-                                startActivity(Intent.createChooser(email,
-                                        "Choose an Email client :"));
+                                for (int x = 0; x < sg.size(); x++) {
+                                    msg += sg.get(x);
 
-                                Toast.makeText(MainActivity.this, "Email selected",
-                                        Toast.LENGTH_LONG).show();
+                                    Intent email = new Intent(Intent.ACTION_SEND);
+                                    email.putExtra(Intent.EXTRA_SUBJECT, "Singapore");
+                                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{"congjian.mcs@gmail.com"});
+                                    String msg = " ";
+                                    email.putExtra(Intent.EXTRA_TEXT,
+                                            msg);
+                                    email.setType("message/rfc822");
+                                    startActivity(Intent.createChooser(email,
+                                            "Choose an Email client :"));
 
+                                    Toast.makeText(MainActivity.this, "Email selected",
+                                            Toast.LENGTH_LONG).show();
+                                }
 
                             } else if (which == 1) {
                                 for (int x = 0; x < sg.size(); x++){
                                     msg += sg.get(x);
+                                }
+
+                                int permissionCheck = PermissionChecker.checkSelfPermission
+                                        (MainActivity.this, Manifest.permission.SEND_SMS);
+
+                                if (permissionCheck != PermissionChecker.PERMISSION_GRANTED){
+                                    ActivityCompat.requestPermissions(MainActivity.this,
+                                            new String[]{Manifest.permission.SEND_SMS}, 0);
+                                    return;
                                 }
 
                                 SmsManager smsManager = SmsManager.getDefault();
